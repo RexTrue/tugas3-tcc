@@ -31,8 +31,12 @@ router.post("/", (req, res) => {
   const { judul, isi } = req.body;
   console.log("POST /api/notes", { judul, isi });
 
+  if (!judul || !isi) {
+    return res.status(400).json({ error: "judul and isi are required" });
+  }
+
   db.query(
-    "INSERT INTO notes (judul, isi) VALUES (?,?)",
+    { sql: "INSERT INTO notes (judul, isi) VALUES (?,?)", timeout: 10000 },
     [judul, isi],
     (err, result) => {
       if (err) {
