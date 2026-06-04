@@ -4,7 +4,8 @@ const db = mysql.createConnection({
   host: process.env.DB_HOST || "34.172.113.167",
   user: process.env.DB_USER || "admin",
   password: process.env.DB_PASSWORD || "mypassword",
-  database: process.env.DB_NAME || "notes_app"
+  database: process.env.DB_NAME || "notes_app",
+  connectTimeout: 10000,
 });
 
 db.connect((err) => {
