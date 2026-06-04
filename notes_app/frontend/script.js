@@ -1,5 +1,5 @@
-const apiBase = window.API_BASE_URL?.replace(/\/$/, "") || "";
-const API = `${apiBase}/api/notes`;
+const API = `${window.API_BASE_URL || "https://rafa-dot-g-28-489306.as.r.appspot.com"}/api/notes`;
+
 
 function loadNotes() {
   fetch(API)
