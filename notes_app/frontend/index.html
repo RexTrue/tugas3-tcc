@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Notes App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Notes App</h1>
+        <div id="notes"></div>
+        <div id="emptyMessage" class="empty">
+            Belum ada catatan
+        </div>
+    </div>
+    <button class="fab" onclick="showForm()">+</button>
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h2>Tambah Catatan</h2>
+            <input id="judul" placeholder="Judul">
+            <textarea id="isi" placeholder="Isi catatan"></textarea>
+            <div class="modal-actions">
+                <button onclick="closeForm()">Batal</button>
+                <button onclick="tambahNote()">Simpan</button>
+            </div>
+        </div>
+    </div>
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

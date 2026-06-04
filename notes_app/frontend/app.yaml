@@ -1,0 +1,12 @@
+runtime: nodejs20
+instance_class: F1
+
+handlers:
+  - url: /(.*)
+    static_files: \1
+    upload: (.*)
+
+  - url: /.*
+    static_files: index.html
+    upload: index.html
+

@@ -1,0 +1,23 @@
+### GET
+GET http://localhost:3000/api/notes
+
+### POST
+POST http://localhost:3000/api/notes
+Content-Type: application/json
+
+{
+  "judul": "Test",
+  "isi": "Dari REST Client"
+}
+
+### PUT
+PUT http://localhost:3000/api/notes/3
+Content-Type: application/json
+
+{
+  "judul": "Update",
+  "isi": "Update isi"
+}
+
+### DELETE
+DELETE http://localhost:3000/api/notes/2    
