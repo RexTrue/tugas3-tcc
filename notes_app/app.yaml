@@ -1,5 +1,20 @@
-runtime: nodejs20
+runtime: nodejs22
+service: rafa
 
-instance_class: F1
+# Pengaturan hemat resource (Sangat bagus!)
+automatic_scaling:
+  target_cpu_utilization: 0.65
+  min_instances: 0
+  max_instances: 1
 
-environment: standard
+# WAJIB ADA: karena cuma make HTML & JS statis
+handlers:
+  # Mengarahkan domain utama (/) langsung membuka index.html
+  - url: /
+    static_files: index.html
+    upload: index.html
+
+  # Mengizinkan file lain (seperti index.js, util.js, css) bisa dibaca browser
+  - url: /(.*)
+    static_files: \1
+    upload: (.*)
