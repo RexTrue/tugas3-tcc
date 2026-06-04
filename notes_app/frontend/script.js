@@ -1,9 +1,15 @@
-const API = `${window.API_BASE_URL || "https://rafa-dot-g-28-489306.as.r.appspot.com"}/api/notes`;
+const apiBase = window.API_BASE_URL?.replace(/\/$/, "") || "";
+const API = `${apiBase}/api/notes`;
 
+console.log("Notes App API URL:", API);
 
 function loadNotes() {
+  console.log("loadNotes() -> fetching", API);
   fetch(API)
-    .then((res) => res.json())
+    .then((res) => {
+      if (!res.ok) throw new Error(`Load notes failed: ${res.status} ${res.statusText}`);
+      return res.json();
+    })
     .then((data) => {
       const container = document.getElementById("notes");
       const empty = document.getElementById("emptyMessage");
@@ -62,14 +68,25 @@ function tambahNote() {
   const judul = document.getElementById("judul").value;
   const isi = document.getElementById("isi").value;
 
+  console.log("tambahNote() -> POST", API, { judul, isi });
+
   fetch(API, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ judul, isi }),
-  }).then(() => {
-    closeForm();
-    loadNotes();
-  });
+  })
+    .then((res) => {
+      if (!res.ok) throw new Error(`Create note failed: ${res.status} ${res.statusText}`);
+      return res.json();
+    })
+    .then(() => {
+      closeForm();
+      loadNotes();
+    })
+    .catch((err) => {
+      console.error(err);
+      alert(err.message);
+    });
 }
 
 function hapusNote(id) {
