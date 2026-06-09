@@ -1,6 +1,11 @@
 const API_BASE_URL =
   "https://rafa-1018980344585.asia-southeast1.run.app";
 
+
+// ======================
+// LOAD NOTES
+// ======================
+
 async function loadNotes() {
 
   try {
@@ -9,23 +14,31 @@ async function loadNotes() {
       `${API_BASE_URL}/api/notes`
     );
 
+    if (!response.ok) {
+      throw new Error("Failed to fetch notes");
+    }
+
     const data = await response.json();
 
     const notesContainer =
-      document.getElementById("notesContainer");
+      document.getElementById("notes");
+
+    const emptyMessage =
+      document.getElementById("emptyMessage");
 
     notesContainer.innerHTML = "";
 
     // Jika kosong
     if (data.length === 0) {
 
-      notesContainer.innerHTML =
-        "<p>Belum ada catatan</p>";
+      emptyMessage.style.display = "block";
 
       return;
     }
 
-    // Render notes
+    emptyMessage.style.display = "none";
+
+    // Render Notes
     data.forEach((note) => {
 
       const noteCard =
@@ -35,12 +48,23 @@ async function loadNotes() {
 
       noteCard.innerHTML = `
         <h3>${note.judul}</h3>
+
         <p>${note.isi}</p>
 
+        <small>
+          ${new Date(
+            note.tanggal_dibuat
+          ).toLocaleString()}
+        </small>
+
         <div class="note-actions">
-          <button onclick="deleteNote(${note.id})">
+
+          <button
+            onclick="deleteNote(${note.id})"
+          >
             Hapus
           </button>
+
         </div>
       `;
 
@@ -49,11 +73,19 @@ async function loadNotes() {
 
   } catch (error) {
 
-    console.error("LOAD NOTES ERROR:", error);
+    console.error(
+      "LOAD NOTES ERROR:",
+      error
+    );
   }
 }
 
-async function tambahCatatan() {
+
+// ======================
+// TAMBAH NOTE
+// ======================
+
+async function tambahNote() {
 
   try {
 
@@ -93,38 +125,45 @@ async function tambahCatatan() {
       }
     );
 
-    // Cek response
     if (!response.ok) {
 
-      const errorData =
-        await response.json();
-
-      console.error(errorData);
-
-      alert("Gagal menambahkan catatan");
-
-      return;
+      throw new Error(
+        "Failed to create note"
+      );
     }
 
-    // Reset form
+    // Reset Form
     judulInput.value = "";
     isiInput.value = "";
 
-    // Reload notes
+    // Close Modal
+    closeForm();
+
+    // Reload Notes
     loadNotes();
 
   } catch (error) {
 
-    console.error("ADD NOTE ERROR:", error);
+    console.error(
+      "ADD NOTE ERROR:",
+      error
+    );
   }
 }
+
+
+// ======================
+// DELETE NOTE
+// ======================
 
 async function deleteNote(id) {
 
   try {
 
     const confirmDelete =
-      confirm("Hapus catatan ini?");
+      confirm(
+        "Apakah yakin ingin menghapus catatan?"
+      );
 
     if (!confirmDelete) return;
 
@@ -137,34 +176,50 @@ async function deleteNote(id) {
 
     if (!response.ok) {
 
-      alert("Gagal menghapus catatan");
-
-      return;
+      throw new Error(
+        "Failed to delete note"
+      );
     }
 
     loadNotes();
 
   } catch (error) {
 
-    console.error("DELETE NOTE ERROR:", error);
+    console.error(
+      "DELETE NOTE ERROR:",
+      error
+    );
   }
 }
+
+
+// ======================
+// MODAL FUNCTIONS
+// ======================
+
+function showForm() {
+
+  document.getElementById(
+    "modal"
+  ).style.display = "flex";
+}
+
+function closeForm() {
+
+  document.getElementById(
+    "modal"
+  ).style.display = "none";
+}
+
+
+// ======================
+// INIT
+// ======================
 
 document.addEventListener(
   "DOMContentLoaded",
   () => {
 
     loadNotes();
-
-    const addButton =
-      document.getElementById("addButton");
-
-    if (addButton) {
-
-      addButton.addEventListener(
-        "click",
-        tambahCatatan
-      );
-    }
   }
 );
