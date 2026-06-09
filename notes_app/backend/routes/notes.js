@@ -3,14 +3,7 @@ const router = express.Router();
 
 const db = require("../db");
 
-
-// ======================
-// GET ALL NOTES
-// ======================
-
-router.get("/", (req, res) => {
-
-  console.log("GET NOTES HIT");
+router.get("/notes", (req, res) => {
 
   const sql = `
     SELECT *
@@ -28,10 +21,7 @@ router.get("/", (req, res) => {
 
       if (err) {
 
-        console.error(
-          "GET NOTES ERROR:",
-          err
-        );
+        console.error(err);
 
         return res.status(500).json({
           message:
@@ -44,21 +34,15 @@ router.get("/", (req, res) => {
   );
 });
 
-
-// ======================
-// CREATE NOTE
-// ======================
-
-router.post("/", (req, res) => {
-
-  console.log("POST NOTE HIT");
+router.post("/notes", (req, res) => {
 
   const { judul, isi } = req.body;
 
   if (!judul || !isi) {
 
     return res.status(400).json({
-      message: "Judul dan isi wajib diisi",
+      message:
+        "Judul dan isi wajib diisi",
     });
   }
 
@@ -78,10 +62,7 @@ router.post("/", (req, res) => {
 
       if (err) {
 
-        console.error(
-          "CREATE NOTE ERROR:",
-          err
-        );
+        console.error(err);
 
         return res.status(500).json({
           message:
@@ -92,18 +73,15 @@ router.post("/", (req, res) => {
       res.status(201).json({
         message:
           "Note created successfully",
-        noteId: result.insertId,
+
+        noteId:
+          result.insertId,
       });
     }
   );
 });
 
-
-// ======================
-// DELETE NOTE
-// ======================
-
-router.delete("/:id", (req, res) => {
+router.delete("/notes/:id", (req, res) => {
 
   const { id } = req.params;
 
@@ -121,10 +99,7 @@ router.delete("/:id", (req, res) => {
 
       if (err) {
 
-        console.error(
-          "DELETE NOTE ERROR:",
-          err
-        );
+        console.error(err);
 
         return res.status(500).json({
           message:
