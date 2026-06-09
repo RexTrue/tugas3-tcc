@@ -9,9 +9,6 @@ const db =
 const noteRoutes =
   require("./routes/noteRoutes");
 
-const NoteSchema =
-  require("./schema/Note");
-
 const app = express();
 
 const PORT =
@@ -35,36 +32,34 @@ app.listen(
 
   "0.0.0.0",
 
-  async () => {
+  () => {
 
     console.log(
       `Server running on port ${PORT}`
     );
-
-    // Database connect setelah port terbuka
-    try {
-
-      await db.authenticate();
-
-      console.log(
-        "Database Connected..."
-      );
-
-      await NoteSchema.sync();
-
-      console.log(
-        "Database Synchronized..."
-      );
-
-    } catch (error) {
-
-      console.error(
-        "DATABASE ERROR:"
-      );
-
-      console.error(
-        error.message
-      );
-    }
   }
 );
+
+(async () => {
+
+  try {
+
+    await db.authenticate();
+
+    console.log(
+      "Database Connected..."
+    );
+
+    // HAPUS sequelize.sync()
+
+  } catch (error) {
+
+    console.error(
+      "DATABASE ERROR:"
+    );
+
+    console.error(
+      error.message
+    );
+  }
+})();
