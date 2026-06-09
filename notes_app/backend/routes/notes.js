@@ -55,7 +55,7 @@ router.get("/:id", (req, res) => {
 router.post("/", (req, res) => {
   const { judul, isi } = req.body;
 
-  if (!title || !content) {
+  if (!judul || !isi) {
     return res.status(400).json({
       success: false,
       message: "Title and content are required",
@@ -65,7 +65,7 @@ router.post("/", (req, res) => {
   const sql =
     "INSERT INTO notes (title, content) VALUES (?, ?)";
 
-  db.query(sql, [title, content], (err, result) => {
+  db.query(sql, [judul, isi], (err, result) => {
     if (err) {
       console.error("CREATE NOTE ERROR:", err);
 
@@ -88,7 +88,7 @@ router.put("/:id", (req, res) => {
 
   const { title, content } = req.body;
 
-  if (!title || !content) {
+  if (!judul || !isi) {
     return res.status(400).json({
       success: false,
       message: "Title and content are required",
