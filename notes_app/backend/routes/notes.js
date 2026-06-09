@@ -53,7 +53,7 @@ router.get("/:id", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-  const { title, content } = req.body;
+  const { judul, isi } = req.body;
 
   if (!title || !content) {
     return res.status(400).json({
