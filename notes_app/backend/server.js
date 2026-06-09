@@ -5,6 +5,7 @@ const cors =
   require("cors");
 
 require("dotenv").config();
+
 const db =
   require("./db");
 
@@ -13,8 +14,11 @@ const noteRoutes =
 
 const app =
   express();
+
 app.use(cors());
+
 app.use(express.json());
+
 app.get("/", (req, res) => {
 
   res.send(
@@ -22,30 +26,41 @@ app.get("/", (req, res) => {
   );
 });
 
-app.use("/api", notes);
+app.use(
+  "/api",
+  noteRoutes
+);
 
 const PORT =
   process.env.PORT || 3000;
 
-// EXPRESS START DULU
 app.listen(
   PORT,
+
   "0.0.0.0",
+
   () => {
+
     console.log(
       `Server running on port ${PORT}`
     );
   }
 );
 
-// DATABASE ASYNC
+
+// DATABASE CONNECT
 (async () => {
+
   try {
+
     await db.authenticate();
+
     console.log(
       "Database Connected..."
     );
+
   } catch (error) {
+
     console.error(
       error.message
     );
