@@ -15,7 +15,9 @@ async function loadNotes() {
     );
 
     if (!response.ok) {
-      throw new Error("Failed to fetch notes");
+      throw new Error(
+        "Failed to fetch notes"
+      );
     }
 
     const data = await response.json();
@@ -24,27 +26,31 @@ async function loadNotes() {
       document.getElementById("notes");
 
     const emptyMessage =
-      document.getElementById("emptyMessage");
+      document.getElementById(
+        "emptyMessage"
+      );
 
     notesContainer.innerHTML = "";
 
-    // Jika kosong
     if (data.length === 0) {
 
-      emptyMessage.style.display = "block";
+      emptyMessage.style.display =
+        "block";
 
       return;
     }
 
-    emptyMessage.style.display = "none";
+    emptyMessage.style.display =
+      "none";
 
-    // Render Notes
     data.forEach((note) => {
 
       const noteCard =
         document.createElement("div");
 
-      noteCard.classList.add("note-card");
+      noteCard.classList.add(
+        "note-card"
+      );
 
       noteCard.innerHTML = `
         <h3>${note.judul}</h3>
@@ -68,7 +74,9 @@ async function loadNotes() {
         </div>
       `;
 
-      notesContainer.appendChild(noteCard);
+      notesContainer.appendChild(
+        noteCard
+      );
     });
 
   } catch (error) {
@@ -89,22 +97,23 @@ async function tambahNote() {
 
   try {
 
-    const judulInput =
-      document.getElementById("judul");
-
-    const isiInput =
-      document.getElementById("isi");
-
     const judul =
-      judulInput.value.trim();
+      document
+        .getElementById("judul")
+        .value
+        .trim();
 
     const isi =
-      isiInput.value.trim();
+      document
+        .getElementById("isi")
+        .value
+        .trim();
 
-    // Validation
     if (!judul || !isi) {
 
-      alert("Judul dan isi wajib diisi");
+      alert(
+        "Judul dan isi wajib diisi"
+      );
 
       return;
     }
@@ -115,7 +124,8 @@ async function tambahNote() {
         method: "POST",
 
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type":
+            "application/json",
         },
 
         body: JSON.stringify({
@@ -132,15 +142,17 @@ async function tambahNote() {
       );
     }
 
-    // Reset Form
-    judulInput.value = "";
-    isiInput.value = "";
+    document.getElementById(
+      "judul"
+    ).value = "";
 
-    // Close Modal
+    document.getElementById(
+      "isi"
+    ).value = "";
+
     closeForm();
 
-    // Reload Notes
-    loadNotes();
+    await loadNotes();
 
   } catch (error) {
 
@@ -181,7 +193,7 @@ async function deleteNote(id) {
       );
     }
 
-    loadNotes();
+    await loadNotes();
 
   } catch (error) {
 
@@ -194,7 +206,7 @@ async function deleteNote(id) {
 
 
 // ======================
-// MODAL FUNCTIONS
+// MODAL
 // ======================
 
 function showForm() {
