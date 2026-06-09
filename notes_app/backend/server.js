@@ -9,7 +9,7 @@ const db =
   require("./db");
 
 const noteRoutes =
-  require("./routes/noteRoutes");
+  require("./routes/notes");
 
 const app =
   express();
@@ -22,7 +22,7 @@ app.get("/", (req, res) => {
   );
 });
 
-app.use("/api", noteRoutes);
+app.use("/api", notes);
 
 const PORT =
   process.env.PORT || 3000;
