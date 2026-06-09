@@ -4,79 +4,73 @@ const router = express.Router();
 const db = require("../db");
 
 router.get("/", (req, res) => {
+
   const sql = "SELECT * FROM notes ORDER BY id DESC";
 
   db.query(sql, (err, results) => {
+
     if (err) {
       console.error("GET NOTES ERROR:", err);
 
       return res.status(500).json({
-        success: false,
         message: "Failed to fetch notes",
       });
     }
 
-    res.status(200).json({
-      success: true,
-      data: results,
-    });
+    res.status(200).json(results);
   });
 });
 
 router.get("/:id", (req, res) => {
+
   const { id } = req.params;
 
   const sql = "SELECT * FROM notes WHERE id = ?";
 
   db.query(sql, [id], (err, results) => {
+
     if (err) {
       console.error("GET NOTE ERROR:", err);
 
       return res.status(500).json({
-        success: false,
         message: "Failed to fetch note",
       });
     }
 
     if (results.length === 0) {
       return res.status(404).json({
-        success: false,
         message: "Note not found",
       });
     }
 
-    res.status(200).json({
-      success: true,
-      data: results[0],
-    });
+    res.status(200).json(results[0]);
   });
 });
 
 router.post("/", (req, res) => {
+
   const { judul, isi } = req.body;
 
   if (!judul || !isi) {
     return res.status(400).json({
-      success: false,
-      message: "Title and content are required",
+      message: "Judul dan isi wajib diisi",
     });
   }
 
   const sql =
-    "INSERT INTO notes (title, content) VALUES (?, ?)";
+    "INSERT INTO notes (judul, isi) VALUES (?, ?)";
 
   db.query(sql, [judul, isi], (err, result) => {
+
     if (err) {
       console.error("CREATE NOTE ERROR:", err);
 
       return res.status(500).json({
-        success: false,
         message: "Failed to create note",
       });
     }
 
     res.status(201).json({
-      success: true,
       message: "Note created successfully",
       noteId: result.insertId,
     });
@@ -84,68 +78,53 @@ router.post("/", (req, res) => {
 });
 
 router.put("/:id", (req, res) => {
+
   const { id } = req.params;
 
-  const { title, content } = req.body;
+  const { judul, isi } = req.body;
 
   if (!judul || !isi) {
     return res.status(400).json({
-      success: false,
-      message: "Title and content are required",
+      message: "Judul dan isi wajib diisi",
     });
   }
 
   const sql =
-    "UPDATE notes SET title = ?, content = ? WHERE id = ?";
+    "UPDATE notes SET judul = ?, isi = ? WHERE id = ?";
 
-  db.query(sql, [title, content, id], (err, result) => {
+  db.query(sql, [judul, isi, id], (err, result) => {
+
     if (err) {
       console.error("UPDATE NOTE ERROR:", err);
 
       return res.status(500).json({
-        success: false,
         message: "Failed to update note",
       });
     }
 
-    if (result.affectedRows === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "Note not found",
-      });
-    }
-
     res.status(200).json({
-      success: true,
       message: "Note updated successfully",
     });
   });
 });
 
 router.delete("/:id", (req, res) => {
+
   const { id } = req.params;
 
   const sql = "DELETE FROM notes WHERE id = ?";
 
   db.query(sql, [id], (err, result) => {
+
     if (err) {
       console.error("DELETE NOTE ERROR:", err);
 
       return res.status(500).json({
-        success: false,
         message: "Failed to delete note",
       });
     }
 
-    if (result.affectedRows === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "Note not found",
-      });
-    }
-
     res.status(200).json({
-      success: true,
       message: "Note deleted successfully",
     });
   });
