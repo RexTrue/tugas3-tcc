@@ -1,102 +1,170 @@
-const apiBase = window.API_BASE_URL?.replace(/\/$/, "") || "";
-const API = `${apiBase}/api/notes`;
+const API_BASE_URL =
+  "https://rafa-1018980344585.asia-southeast1.run.app";
 
-console.log("Notes App API URL:", API);
+async function loadNotes() {
 
-function loadNotes() {
-  console.log("loadNotes() -> fetching", API);
-  fetch(API)
-    .then((res) => {
-      if (!res.ok) throw new Error(`Load notes failed: ${res.status} ${res.statusText}`);
-      return res.json();
-    })
-    .then((data) => {
-      const container = document.getElementById("notes");
-      const empty = document.getElementById("emptyMessage");
+  try {
 
-      container.innerHTML = "";
+    const response = await fetch(
+      `${API_BASE_URL}/api/notes`
+    );
 
-      if (data.length === 0) {
-        empty.style.display = "block";
-        return;
+    const data = await response.json();
+
+    const notesContainer =
+      document.getElementById("notesContainer");
+
+    notesContainer.innerHTML = "";
+
+    // Jika kosong
+    if (data.length === 0) {
+
+      notesContainer.innerHTML =
+        "<p>Belum ada catatan</p>";
+
+      return;
+    }
+
+    // Render notes
+    data.forEach((note) => {
+
+      const noteCard =
+        document.createElement("div");
+
+      noteCard.classList.add("note-card");
+
+      noteCard.innerHTML = `
+        <h3>${note.judul}</h3>
+        <p>${note.isi}</p>
+
+        <div class="note-actions">
+          <button onclick="deleteNote(${note.id})">
+            Hapus
+          </button>
+        </div>
+      `;
+
+      notesContainer.appendChild(noteCard);
+    });
+
+  } catch (error) {
+
+    console.error("LOAD NOTES ERROR:", error);
+  }
+}
+
+async function tambahCatatan() {
+
+  try {
+
+    const judulInput =
+      document.getElementById("judul");
+
+    const isiInput =
+      document.getElementById("isi");
+
+    const judul =
+      judulInput.value.trim();
+
+    const isi =
+      isiInput.value.trim();
+
+    // Validation
+    if (!judul || !isi) {
+
+      alert("Judul dan isi wajib diisi");
+
+      return;
+    }
+
+    const response = await fetch(
+      `${API_BASE_URL}/api/notes`,
+      {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json",
+        },
+
+        body: JSON.stringify({
+          judul,
+          isi,
+        }),
       }
+    );
 
-      empty.style.display = "none";
+    // Cek response
+    if (!response.ok) {
 
-      data.forEach((note) => {
-        const preview =
-          note.isi.length > 200 ? note.isi.substring(0, 200) + "..." : note.isi;
+      const errorData =
+        await response.json();
 
-        container.innerHTML += `
+      console.error(errorData);
 
-<div class="note">
+      alert("Gagal menambahkan catatan");
 
-<div class="note-content" onclick="openDetail(${note.id})">
+      return;
+    }
 
-<h3>${note.judul}</h3>
+    // Reset form
+    judulInput.value = "";
+    isiInput.value = "";
 
-<p class="preview">${preview}</p>
+    // Reload notes
+    loadNotes();
 
-<small>Terakhir diubah: ${new Date(note.tanggal_update).toLocaleString()}</small>
+  } catch (error) {
 
-</div>
-
-<div class="actions">
-
-<button type "button" class="edit" onclick="openDetail(${note.id})">Edit</button>
-
-<button type "button" class="delete" onclick="hapusNote(${note.id})">Delete</button>
-
-</div>
-
-</div>
-
-`;
-      });
-    });
+    console.error("ADD NOTE ERROR:", error);
+  }
 }
 
-function showForm() {
-  document.getElementById("modal").style.display = "flex";
+async function deleteNote(id) {
+
+  try {
+
+    const confirmDelete =
+      confirm("Hapus catatan ini?");
+
+    if (!confirmDelete) return;
+
+    const response = await fetch(
+      `${API_BASE_URL}/api/notes/${id}`,
+      {
+        method: "DELETE",
+      }
+    );
+
+    if (!response.ok) {
+
+      alert("Gagal menghapus catatan");
+
+      return;
+    }
+
+    loadNotes();
+
+  } catch (error) {
+
+    console.error("DELETE NOTE ERROR:", error);
+  }
 }
 
-function closeForm() {
-  document.getElementById("modal").style.display = "none";
-}
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
 
-function tambahNote() {
-  const judul = document.getElementById("judul").value;
-  const isi = document.getElementById("isi").value;
+    loadNotes();
 
-  console.log("tambahNote() -> POST", API, { judul, isi });
+    const addButton =
+      document.getElementById("addButton");
 
-  fetch(API, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ judul, isi }),
-  })
-    .then((res) => {
-      if (!res.ok) throw new Error(`Create note failed: ${res.status} ${res.statusText}`);
-      return res.json();
-    })
-    .then(() => {
-      closeForm();
-      loadNotes();
-    })
-    .catch((err) => {
-      console.error(err);
-      alert(err.message);
-    });
-}
+    if (addButton) {
 
-function hapusNote(id) {
-  if (!confirm("Hapus catatan?")) return;
-
-  fetch(API + "/" + id, { method: "DELETE" }).then(() => loadNotes());
-}
-
-function openDetail(id) {
-  window.location.href = "detail.html?id=" + id;
-}
-
-loadNotes();
+      addButton.addEventListener(
+        "click",
+        tambahCatatan
+      );
+    }
+  }
+);
