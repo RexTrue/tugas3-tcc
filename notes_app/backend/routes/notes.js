@@ -3,13 +3,23 @@ const router = express.Router();
 
 const db = require("../db");
 
+
+// ======================
+// GET ALL NOTES
+// ======================
+
 router.get("/", (req, res) => {
 
-  const sql = "SELECT * FROM notes ORDER BY id DESC";
+  const sql = `
+    SELECT *
+    FROM notes
+    ORDER BY tanggal_dibuat DESC
+  `;
 
   db.query(sql, (err, results) => {
 
     if (err) {
+
       console.error("GET NOTES ERROR:", err);
 
       return res.status(500).json({
@@ -21,15 +31,22 @@ router.get("/", (req, res) => {
   });
 });
 
+
+// ======================
+// GET NOTE BY ID
+// ======================
+
 router.get("/:id", (req, res) => {
 
   const { id } = req.params;
 
-  const sql = "SELECT * FROM notes WHERE id = ?";
+  const sql =
+    "SELECT * FROM notes WHERE id = ?";
 
   db.query(sql, [id], (err, results) => {
 
     if (err) {
+
       console.error("GET NOTE ERROR:", err);
 
       return res.status(500).json({
@@ -38,6 +55,7 @@ router.get("/:id", (req, res) => {
     }
 
     if (results.length === 0) {
+
       return res.status(404).json({
         message: "Note not found",
       });
@@ -47,22 +65,31 @@ router.get("/:id", (req, res) => {
   });
 });
 
+
+// ======================
+// CREATE NOTE
+// ======================
+
 router.post("/", (req, res) => {
 
   const { judul, isi } = req.body;
 
   if (!judul || !isi) {
+
     return res.status(400).json({
       message: "Judul dan isi wajib diisi",
     });
   }
 
-  const sql =
-    "INSERT INTO notes (judul, isi) VALUES (?, ?)";
+  const sql = `
+    INSERT INTO notes (judul, isi)
+    VALUES (?, ?)
+  `;
 
   db.query(sql, [judul, isi], (err, result) => {
 
     if (err) {
+
       console.error("CREATE NOTE ERROR:", err);
 
       return res.status(500).json({
@@ -77,6 +104,11 @@ router.post("/", (req, res) => {
   });
 });
 
+
+// ======================
+// UPDATE NOTE
+// ======================
+
 router.put("/:id", (req, res) => {
 
   const { id } = req.params;
@@ -84,17 +116,22 @@ router.put("/:id", (req, res) => {
   const { judul, isi } = req.body;
 
   if (!judul || !isi) {
+
     return res.status(400).json({
       message: "Judul dan isi wajib diisi",
     });
   }
 
-  const sql =
-    "UPDATE notes SET judul = ?, isi = ? WHERE id = ?";
+  const sql = `
+    UPDATE notes
+    SET judul = ?, isi = ?
+    WHERE id = ?
+  `;
 
   db.query(sql, [judul, isi, id], (err, result) => {
 
     if (err) {
+
       console.error("UPDATE NOTE ERROR:", err);
 
       return res.status(500).json({
@@ -108,15 +145,22 @@ router.put("/:id", (req, res) => {
   });
 });
 
+
+// ======================
+// DELETE NOTE
+// ======================
+
 router.delete("/:id", (req, res) => {
 
   const { id } = req.params;
 
-  const sql = "DELETE FROM notes WHERE id = ?";
+  const sql =
+    "DELETE FROM notes WHERE id = ?";
 
   db.query(sql, [id], (err, result) => {
 
     if (err) {
+
       console.error("DELETE NOTE ERROR:", err);
 
       return res.status(500).json({
