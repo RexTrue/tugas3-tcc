@@ -46,23 +46,3 @@ app.listen(
     );
   }
 );
-
-
-// DATABASE CONNECT
-(async () => {
-
-  try {
-
-    await db.authenticate();
-
-    console.log(
-      "Database Connected..."
-    );
-
-  } catch (error) {
-
-    console.error(
-      error.message
-    );
-  }
-})();
