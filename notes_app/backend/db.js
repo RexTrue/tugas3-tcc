@@ -17,6 +17,8 @@ const sequelize =
 
       dialect: "mysql",
 
+      port: 3306,
+
       logging: false,
 
       dialectOptions: {
