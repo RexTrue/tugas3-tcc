@@ -1,11 +1,6 @@
 const API_BASE_URL =
   "https://rafa-1018980344585.asia-southeast1.run.app";
 
-
-// ======================
-// LOAD NOTES
-// ======================
-
 async function loadNotes() {
 
   try {
@@ -15,6 +10,7 @@ async function loadNotes() {
     );
 
     if (!response.ok) {
+
       throw new Error(
         "Failed to fetch notes"
       );
@@ -66,6 +62,12 @@ async function loadNotes() {
         <div class="note-actions">
 
           <button
+            onclick="editNote(${note.id})"
+          >
+            Edit
+          </button>
+
+          <button
             onclick="deleteNote(${note.id})"
           >
             Hapus
@@ -87,11 +89,6 @@ async function loadNotes() {
     );
   }
 }
-
-
-// ======================
-// TAMBAH NOTE
-// ======================
 
 async function tambahNote() {
 
@@ -163,10 +160,11 @@ async function tambahNote() {
   }
 }
 
+function editNote(id) {
 
-// ======================
-// DELETE NOTE
-// ======================
+  window.location.href =
+    `detail.html?id=${id}`;
+}
 
 async function deleteNote(id) {
 
@@ -204,11 +202,6 @@ async function deleteNote(id) {
   }
 }
 
-
-// ======================
-// MODAL
-// ======================
-
 function showForm() {
 
   document.getElementById(
@@ -222,11 +215,6 @@ function closeForm() {
     "modal"
   ).style.display = "none";
 }
-
-
-// ======================
-// INIT
-// ======================
 
 document.addEventListener(
   "DOMContentLoaded",
